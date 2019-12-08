@@ -40,7 +40,7 @@ MAX_BITRATE=$((2500*1024))
 
 # Color of side bars. If aspect ratio isn't a:b, bars will be added to video for getting a:b aspect ratio.
 # Defaul: "black", You can change it to "red" to view that videos really change resolution.
-color="red"
+color="black"
 
 #duration=$(ffprobe -v error -select_streams v:0 -show_entries stream=duration -of compact=p=0:nk=1 $INPUT)
 width=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of default=nk=1:nw=1 $INPUT)
