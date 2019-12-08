@@ -4,7 +4,7 @@ if (( "$#" < 4 )); then
   echo "USAGE: $0 -i <input filename> -o <output filename> [-p quality|time][-d]"
   echo "-i: determines name of the input file."
   echo "-o: determines name of the output file."
-  echo "-p: determines priority(quality/time). By default this value specified as middle between those two."
+  echo "-p: determines priority(quality/time). By default this value specified as middle between these two."
   echo "  quality: video processing might be slower, but quality will be better."
   echo "  time: video processing might be faster, but quality will be worse."
   echo "-d: to see debug info."
@@ -38,6 +38,10 @@ b=9
 # Max bitrate. Default: 2500 kbits/s
 MAX_BITRATE=$((2500*1024))
 
+# Max width/height. If resolution will be greater than these vars, resolution will be scaled.
+MAX_WIDTH=1920
+MAX_HEIGHT=1080
+
 # Color of side bars. If aspect ratio isn't a:b, bars will be added to video for getting a:b aspect ratio.
 # Defaul: "black", You can change it to "red" to view that videos really change resolution.
 color="black"
@@ -69,10 +73,10 @@ if [ $(bc <<< "$asp_ratio < $ENDRATIO") -eq 1 ]; then
 
   temp=$(($nw-$width))
 
-  if ((nw > 1920)) || ((nh > 1080)); then
-    temp=$((temp*1920/nw))
-    nw=$((1920-$temp))
-    nh=1080
+  if ((nw > MAX_WIDTH)) || ((nh > MAX_HEIGHT)); then
+    temp=$((temp*MAX_WIDTH/nw))
+    nw=$(($MAX_WIDTH-$temp))
+    nh=$MAX_HEIGHT
     if [ $DEBUG -eq 1 ]; then
       echo "SCALING A VERTICAL VIDEO!!!!!!!!!!!!!!!!!!!!!!!! temp: ${temp}"
     fi
@@ -89,10 +93,10 @@ elif [ $(bc <<< "$asp_ratio > $ENDRATIO") -eq 1 ]; then
 
   temp=$(($nh-$height))
 
-  if ((nw > 1920)) || ((nh > 1080)); then
-    temp=$((temp*1920/nw))
-    nw=1920
-    nh=$((1080-$temp))
+  if ((nw > MAX_WIDTH)) || ((nh > MAX_HEIGHT)); then
+    temp=$((temp*MAX_WIDTH/nw))
+    nw=$MAX_WIDTH
+    nh=$(($MAX_HEIGHT-$temp))
     if [ $DEBUG -eq 1 ]; then
       echo "SCALING A GORIZONTAL VIDEO!!!!!!!!!!!!!!!!!!!!!!!! temp: ${temp}"
     fi
@@ -107,9 +111,9 @@ if (( $video_bitrate > MAX_BITRATE  )); then
   bitrate_to_set=$MAX_BITRATE
 fi
 
-if ((nw > 1920)) || ((nh > 1080)); then
-  nw=1920
-  nh=1080
+if ((nw > MAX_WIDTH)) || ((nh > MAX_HEIGHT)); then
+  nw=$MAX_WIDTH
+  nh=$MAX_HEIGHT
   params="-vf fps=fps=24,scale=$nw:$nh"
   if [ $DEBUG -eq 1 ]; then
     echo "~~~~~~~~~~~~~~~~~~~~~~ASPECT RATIO ALREADY ${a}:${b}~~~~~~~~~~~~~~~~~~~~~~"
