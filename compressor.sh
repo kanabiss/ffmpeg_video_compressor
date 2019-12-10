@@ -130,7 +130,7 @@ else
 fi
 
 # The ffmpeg function that converts a videos.
-ffmpeg -i $INPUT -preset $preset -tune zerolatency $params -vcodec libx264 -b:v $bitrate_to_set $OUTPUT
+ffmpeg -i $INPUT -preset $preset -tune zerolatency $params -vcodec libx264 -b:v $bitrate_to_set $OUTPUT -async 1 -vsync 1
 echo "--------------------------"
 
 if [ $DEBUG -eq 1 ]; then
